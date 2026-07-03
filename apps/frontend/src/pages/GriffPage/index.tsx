@@ -161,6 +161,11 @@ const Lead = styled.p`
   margin: 0 auto ${tokens.spacing['3xl']};
 `
 
+const GrowthEm = styled.b<{ $neg?: boolean }>`
+  color: ${({ $neg }) => ($neg ? '#d64545' : tokens.color.green)};
+  font-weight: ${tokens.font.weight.bold};
+`
+
 // ── tier ladder (their table language + an APY column) ─────────
 
 const Ladder = styled.div`
@@ -347,7 +352,7 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
           </H2>
           <Lead>
             The monthly reward pool is sized by how much total delegation grew that month.
-            Right now we're at +{growthPct}%, which puts the pool in tier {current.index + 1}
+            Right now we're at <GrowthEm $neg={growthRaw < 0}>{growthRaw >= 0 ? '+' : ''}{growthPct}%</GrowthEm>, which puts the pool in tier {current.index + 1}
             {next ? `. Reach tier ${next.index + 1} and the pool jumps from ${formatPool(current.poolSizeEns)} to ${formatPool(next.poolSizeEns)} ENS, and everyone's APY climbs with it` : ", the top of the ladder"}.
             These are the official tiers from the ENS delegation incentives program.
           </Lead>
