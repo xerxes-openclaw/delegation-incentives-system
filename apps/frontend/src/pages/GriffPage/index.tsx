@@ -106,10 +106,11 @@ const StatK = styled.div`
   margin-bottom: 2px;
 `
 
-const StatV = styled.div<{ $blue?: boolean }>`
+const StatV = styled.div<{ $blue?: boolean; $green?: boolean; $red?: boolean }>`
   font-size: 22px;
   font-weight: ${tokens.font.weight.bold};
-  color: ${({ $blue }) => ($blue ? tokens.color.blue : tokens.color.text)};
+  color: ${({ $blue, $green, $red }) =>
+    $green ? tokens.color.green : $red ? '#d64545' : $blue ? tokens.color.blue : tokens.color.text};
 `
 
 const CtaWrap = styled.div`
@@ -314,7 +315,9 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
             </Stat>
             <Stat>
               <StatK>Delegation growth this round</StatK>
-              <StatV>+{growthPct}%</StatV>
+              <StatV $green={growthRaw >= 0} $red={growthRaw < 0}>
+                {growthRaw >= 0 ? '+' : ''}{growthPct}%
+              </StatV>
             </Stat>
             <Stat>
               <StatK>Top tier pays</StatK>
