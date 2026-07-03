@@ -171,7 +171,7 @@ export function Footer() {
           <BrandBlock>
             <BrandText>A community program for safer ENS governance.</BrandText>
             <BrandSub>
-              Forked version — built by Xerxes, not by blockful. Forked from{' '}
+              Forked version built by Xerxes. Forked from{' '}
               <BrandSubLink
                 href="https://github.com/blockful/delegation-incentives-system"
                 target="_blank"
@@ -179,15 +179,6 @@ export function Footer() {
               >
                 blockful
               </BrandSubLink>
-              {' · '}Powered by{' '}
-              <BrandSubLink
-                href="https://anticapture.com?utm_source=ens-incentives&utm_medium=footer&utm_campaign=delegation-incentives"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Anticapture
-              </BrandSubLink>
-              .
             </BrandSub>
           </BrandBlock>
 
