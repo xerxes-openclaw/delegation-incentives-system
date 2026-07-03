@@ -286,7 +286,8 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
 
   const current = tierData.tiers.find((t) => t.isCurrent) ?? tierData.tiers[0]
   const next = tierData.tiers.find((t) => t.index === current.index + 1)
-  const growthPct = Number(tierData.currentGrowthPct).toFixed(1)
+  const growthRaw = Number(tierData.currentGrowthPct)
+  const growthPct = Math.abs(growthRaw) < 1 ? growthRaw.toFixed(2) : growthRaw.toFixed(1)
   const isDelegated = walletState.status === 'delegated'
 
   return (
