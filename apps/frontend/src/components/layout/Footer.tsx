@@ -171,9 +171,9 @@ export function Footer() {
           <BrandBlock>
             <BrandText>A community program for safer ENS governance.</BrandText>
             <BrandSub>
-              Built with{' '}
+              Forked version — built by Xerxes, not by blockful. Forked from{' '}
               <BrandSubLink
-                href="https://blockful.io?utm_source=ens-incentives&utm_medium=footer&utm_campaign=delegation-incentives"
+                href="https://github.com/blockful/delegation-incentives-system"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -194,7 +194,6 @@ export function Footer() {
           <NavColumn>
             <ColumnTitle>Explore</ColumnTitle>
             <FooterLink to="/">How It Works</FooterLink>
-            <FooterLink to="/voters">Voters</FooterLink>
             <FooterLink to="/rounds">Rounds</FooterLink>
             <FooterLink to="/transparency">Transparency</FooterLink>
           </NavColumn>
@@ -208,8 +207,9 @@ export function Footer() {
             >
               Forum ↗
             </ExternalLink>
+            {/* Points at the staging fork; swap to the production repo when that exists. */}
             <ExternalLink
-              href="https://github.com/blockful/delegation-incentives-system"
+              href="https://github.com/xerxes-openclaw/delegation-incentives-system"
               target="_blank"
               rel="noopener noreferrer"
             >
