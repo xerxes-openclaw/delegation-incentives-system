@@ -1,6 +1,7 @@
 import { lazy, Suspense, type ReactElement, type ReactNode } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { LandingPage } from '@/pages/LandingPage'
 import {
   DashboardPageSkeleton,
   DelegateProfileSkeleton,
@@ -29,14 +30,14 @@ export function Router() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route index element={<LazyPage><GriffPage /></LazyPage>} />
+        <Route index element={<LandingPage />} />
         <Route path="dashboard" element={<LazyPage><DashboardPage /></LazyPage>} />
         <Route path="voters" element={<LazyPage fallback={<VotersPageSkeleton />}><VotersPage /></LazyPage>} />
         <Route path="voters/:address" element={<LazyPage fallback={<DelegateProfileSkeleton />}><VoterProfilePage /></LazyPage>} />
         <Route path="rounds/:roundNumber" element={<LazyPage><RoundDetailPage /></LazyPage>} />
         <Route path="rounds" element={<LazyPage fallback={<RoundsPageSkeleton />}><RoundsPage /></LazyPage>} />
         <Route path="transparency" element={<LazyPage fallback={<TransparencyPageSkeleton />}><TransparencyPage /></LazyPage>} />
-        <Route path="griff" element={<Navigate to="/" replace />} />
+        <Route path="griff" element={<LazyPage><GriffPage /></LazyPage>} />
         {/* Holder share links are crawler-only (OG tags via api/holder-html);
             humans who open one land on the campaign. */}
         <Route path="share/holder/:address" element={<Navigate to="/" replace />} />

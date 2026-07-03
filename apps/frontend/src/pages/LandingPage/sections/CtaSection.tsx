@@ -371,8 +371,8 @@ export function CtaSection() {
             the pool for&nbsp;everyone.
           </Subtitle>
           <Actions>
-            <PrimaryCta to="/voters">
-              Delegate to an active voter
+            <PrimaryCta to="/griff">
+              Delegate to Griff
               <FontAwesomeIcon icon={faArrowRight} />
             </PrimaryCta>
             <SecondaryCta

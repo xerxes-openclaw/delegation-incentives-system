@@ -248,9 +248,9 @@ export function HeroSection() {
           Rewards are automatic, gas is sponsored for wallets holding {gasMinEns}+ ENS.
         </Subtitle>
         <Actions>
-          <RouterLink to="/voters">
+          <RouterLink to="/griff">
             <Button colorStyle="bluePrimary">
-              Delegate now<FreeBadge>Free</FreeBadge>
+              Delegate to Griff<FreeBadge>Free</FreeBadge>
             </Button>
           </RouterLink>
           <AnchorLink href="#how-it-works" onClick={scrollToHowItWorks}>
