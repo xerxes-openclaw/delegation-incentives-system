@@ -16,6 +16,7 @@ const VoterProfilePage = lazy(() => import('@/pages/VoterProfilePage').then((mod
 const RoundsPage = lazy(() => import('@/pages/RoundsPage').then((module) => ({ default: module.RoundsPage })))
 const RoundDetailPage = lazy(() => import('@/pages/RoundsPage/RoundDetailPage').then((module) => ({ default: module.RoundDetailPage })))
 const TransparencyPage = lazy(() => import('@/pages/TransparencyPage').then((module) => ({ default: module.TransparencyPage })))
+const GriffPage = lazy(() => import('@/pages/GriffPage').then((module) => ({ default: module.GriffPage })))
 
 function LazyPage({ children, fallback }: { children: ReactNode; fallback?: ReactElement }) {
   return (
@@ -36,6 +37,7 @@ export function Router() {
         <Route path="rounds/:roundNumber" element={<LazyPage><RoundDetailPage /></LazyPage>} />
         <Route path="rounds" element={<LazyPage fallback={<RoundsPageSkeleton />}><RoundsPage /></LazyPage>} />
         <Route path="transparency" element={<LazyPage fallback={<TransparencyPageSkeleton />}><TransparencyPage /></LazyPage>} />
+        <Route path="griff" element={<LazyPage><GriffPage /></LazyPage>} />
         {/* Holder share links are crawler-only (OG tags via api/holder-html);
             humans who open one land on the campaign. */}
         <Route path="share/holder/:address" element={<Navigate to="/" replace />} />
