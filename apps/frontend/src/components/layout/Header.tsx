@@ -257,7 +257,6 @@ const MobileNavLink = styled(NavLink)`
 
 const publicNavItems = [
   { to: '/', label: 'Home' },
-  { to: '/voters', label: 'Voters' },
   { to: '/rounds', label: 'Rounds' },
   { to: '/transparency', label: 'Transparency' },
 ] as const
