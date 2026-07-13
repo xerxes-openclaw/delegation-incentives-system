@@ -69,3 +69,11 @@ export function projectPayout(
   const targetPool = parseFloat(targetPoolEns) || 0
   return (reward * (targetPool / currentPool)).toString()
 }
+
+/** '12.50' → '12.5%', '54.00' → '54%'; em-dash placeholder when absent. */
+export function fmtApy(pct: string | null | undefined): string {
+  if (pct == null) return '—'
+  const n = Number(pct)
+  if (!Number.isFinite(n)) return '—'
+  return `${n % 1 === 0 ? n.toFixed(0) : n.toFixed(1)}%`
+}

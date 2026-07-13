@@ -14,20 +14,12 @@ import { tokens } from '@/styles/tokens'
 import { fadeInUp } from '@/styles/primitives'
 import { ErrorMessage } from '@/styles'
 import { LandingPageSkeleton } from '@/components/shared/PageSkeletons'
-import { formatPool } from '@/utils/dashboard'
+import { formatPool, fmtApy } from '@/utils/dashboard'
 
 /** griff.eth — resolved on mainnet. The page exists to grow delegation to him. */
 const GRIFF_ADDRESS = '0x839395e20bbB182fa440d08F850E6c7A8f6F0780' as `0x${string}`
 const GRIFF_ENS = 'griff.eth'
 const GRIFF_AVATAR = 'https://metadata.ens.domains/mainnet/avatar/griff.eth'
-
-/** '12.50' → '12.5%', '54.00' → '54%' */
-function fmtApy(pct: string | null | undefined): string {
-  if (pct == null) return '—'
-  const n = Number(pct)
-  if (!Number.isFinite(n)) return '—'
-  return `${n % 1 === 0 ? n.toFixed(0) : n.toFixed(1)}%`
-}
 
 function growthBand(t: TierEntry): string {
   const min = Math.round(Number(t.momGrowthMinPct))

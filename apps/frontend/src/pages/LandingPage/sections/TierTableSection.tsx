@@ -5,7 +5,13 @@ import { faShareNodes } from '@fortawesome/free-solid-svg-icons'
 import type { TierEntry } from '@/api/types'
 import { tokens } from '@/styles/tokens'
 import { fadeInUp } from '@/styles/primitives'
-import { formatPool } from '@/utils/dashboard'
+import { formatPool, fmtApy } from '@/utils/dashboard'
+
+/** "~12.5% APY" caption for a tier, or null when the API has no estimate. */
+function apyLabel(tier: TierEntry): string | null {
+  const label = fmtApy(tier.estimatedAprPct)
+  return label === '—' ? null : `~${label} APY for delegators`
+}
 
 interface TierTableSectionProps {
   tiers: TierEntry[]
@@ -419,6 +425,17 @@ const MilestoneCaption = styled.span`
   }
 `
 
+const ApyCaption = styled.span<{ $isCurrent: boolean }>`
+  font-size: ${tokens.font.size.xs};
+  font-weight: ${tokens.font.weight.bold};
+  color: ${({ $isCurrent }) =>
+    $isCurrent ? tokens.color.positiveEmphasis : tokens.color.blue};
+
+  @media (min-width: 768px) {
+    font-size: ${tokens.font.size.sm};
+  }
+`
+
 const AnimatedRow = styled.div<{ $visible: boolean }>`
   opacity: 0;
   ${({ $visible }) =>
@@ -521,6 +538,11 @@ export function TierTableSection({ tiers }: TierTableSectionProps) {
                     <PoolValue $isUnlocked={tier.isUnlocked}>
                       {poolLabel}
                     </PoolValue>
+                    {apyLabel(tier) && (
+                      <ApyCaption $isCurrent={isCurrent}>
+                        {apyLabel(tier)}
+                      </ApyCaption>
+                    )}
                     {milestoneLabel && (
                       <MilestoneCaption>{milestoneLabel}</MilestoneCaption>
                     )}
