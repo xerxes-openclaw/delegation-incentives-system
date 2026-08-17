@@ -9,6 +9,7 @@ import type { TierEntry, TierProgressionResponse } from '@/api/types'
 import { useAsync } from '@/hooks/useAsync'
 import { useWalletState } from '@/features/wallet/useWalletState'
 import { DelegationModal } from '@/features/delegate/components/DelegationModal'
+import { TierTableSection } from '@/pages/LandingPage/sections/TierTableSection'
 import { contracts } from '@/config/contracts'
 import { tokens } from '@/styles/tokens'
 import { fadeInUp } from '@/styles/primitives'
@@ -272,8 +273,33 @@ const WhyText = styled.p`
 `
 
 const BottomCta = styled.div`
-  margin-top: ${tokens.spacing['3xl']};
-  text-align: center;
+  margin-top: ${tokens.spacing.md};
+  display: flex;
+  flex-direction: column;
+  gap: ${tokens.spacing.sm};
+`
+
+const LearnMoreBtn = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 56px;
+  padding: 0 24px;
+  border-radius: 16px;
+  background: ${tokens.color.white};
+  color: ${tokens.color.text};
+  border: 1px solid ${tokens.color.border};
+  font-weight: ${tokens.font.weight.bold};
+  font-size: ${tokens.font.size.base};
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  &:hover {
+    background: ${tokens.color.surfaceAlt};
+    border-color: ${tokens.color.gray};
+    text-decoration: none;
+  }
 `
 
 // ── page ────────────────────────────────────────────────────────
@@ -295,11 +321,12 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
           <Avatar src={GRIFF_AVATAR} alt="griff.eth avatar" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
           <Title>Delegate your ENS to Griff</Title>
           <Sub>
-            Your tokens stay in your wallet. Your voting power goes to work with one of
-            the most active delegates in ENS governance. And here's the part people miss:
-            every new delegation pushes the whole pool up a tier, so the APY rises for
-            everyone already in. Delegating doesn't just earn you rewards, it raises your
-            neighbor's too.
+            Griff Green has been in Ethereum since 2015. He led the community response to
+            TheDAO hack, co-founded the White Hat Group that rescued a tenth of all ETH in
+            circulation, and founded Giveth. As a delegate he actually shows up: he votes,
+            he explains his reasoning in public, and he's been doing it across ENS,
+            Optimism, Gitcoin and Arbitrum for years. Delegation is a trust decision.
+            His record is easy to check.
           </Sub>
           <StatRow>
             <Stat $accent>
@@ -338,48 +365,7 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
 
       <Body>
         <BodyInner>
-          <H2>
-            <FontAwesomeIcon icon={faArrowTrendUp} style={{ color: tokens.color.blue, marginRight: 10 }} />
-            More delegation, bigger pool, higher APY
-          </H2>
-          <Lead>
-            The monthly reward pool is sized by how much total delegation grew that month.
-            Right now we're at <GrowthEm $neg={growthRaw < 0}>{growthRaw >= 0 ? '+' : ''}{growthPct}%</GrowthEm>, which puts the pool in tier {current.index + 1}
-            {next ? `. Reach tier ${next.index + 1} and the pool jumps from ${formatPool(current.poolSizeEns)} to ${formatPool(next.poolSizeEns)} ENS, and everyone's APY climbs with it` : ", the top of the ladder"}.
-            These are the official tiers from the ENS delegation incentives program.
-          </Lead>
-
-          <Ladder>
-            <LadderHead>
-              <span>Tier</span>
-              <span>Delegation growth</span>
-              <span>Monthly pool</span>
-              <span>Est. APY</span>
-            </LadderHead>
-            {tierData.tiers.map((t) => (
-              <TierRow key={t.index} $isCurrent={t.isCurrent} $isLocked={!t.isUnlocked && !t.isCurrent}>
-                <TierName $isCurrent={t.isCurrent}>
-                  Tier {t.index + 1}
-                  {t.isCurrent && <NowBadge>now</NowBadge>}
-                </TierName>
-                <Cell>{growthBand(t)}</Cell>
-                <PoolCell>{formatPool(t.poolSizeEns)} ENS</PoolCell>
-                <ApyCell $isCurrent={t.isCurrent}>{fmtApy(t.estimatedAprPct)}</ApyCell>
-              </TierRow>
-            ))}
-          </Ladder>
-
-          <WhyCard>
-            <WhyTitle>Why Griff?</WhyTitle>
-            <WhyText>
-              Griff Green has been in Ethereum since 2015. He led the community response to
-              TheDAO hack, co-founded the White Hat Group that rescued a tenth of all ETH in
-              circulation, and founded Giveth. As a delegate he actually shows up: he votes,
-              he explains his reasoning in public, and he's been doing it across ENS,
-              Optimism, Gitcoin and Arbitrum for years. Delegation is a trust decision.
-              His record is easy to check.
-            </WhyText>
-          </WhyCard>
+          <TierTableSection tiers={tierData.tiers} />
 
           <BottomCta>
             {!isDelegated && (
@@ -387,6 +373,9 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
                 Delegate to griff.eth
               </Button>
             )}
+            <LearnMoreBtn href="https://incentives.ens.blockful.io/" target="_blank" rel="noopener noreferrer">
+              Learn more about the program
+            </LearnMoreBtn>
           </BottomCta>
         </BodyInner>
       </Body>

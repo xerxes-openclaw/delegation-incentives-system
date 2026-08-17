@@ -8,6 +8,8 @@ import { useAccount, useEnsName, useReadContract, useWalletClient } from 'wagmi'
 import { AddressIdentity } from '@/components/shared/AddressIdentity'
 import { tokens } from '@/styles'
 import { formatEnsAmount } from '@/utils/format'
+import { api } from '@/api'
+import { useAsync } from '@/hooks/useAsync'
 import { ShareCardBlock } from './ShareCardBlock'
 import { buildHolderShareUrl, buildVoterOgImageUrl } from '../utils/shareCard'
 
@@ -65,6 +67,12 @@ export function DelegationModal({
   const { address } = useAccount()
   const { data: holderEnsName } = useEnsName({ address, chainId: mainnet.id })
   const { data: walletClient } = useWalletClient({ chainId: 1 })
+  const fetchTiers = useCallback(() => api.tierProgression(), [])
+  const tiersAsync = useAsync(fetchTiers)
+  const currentTierEntry = tiersAsync.data?.tiers.find((t) => t.isCurrent) ?? tiersAsync.data?.tiers[0]
+  const currentApyLabel = currentTierEntry ? `~${Number(currentTierEntry.estimatedAprPct).toFixed(1)}%` : '~6.9%'
+  const ceilingApy = tiersAsync.data ? Math.floor(Number(tiersAsync.data.maxTokenHolderAprPct)) : 14
+  const holderTweetText = `I delegated my $ENS to @GriffGreen and am getting ${currentApyLabel} APY. If you delegate to him too, we can both get over ${ceilingApy}% APY. Check it out:`
 
   const [step, setStep] = useState<DelegationStep>('waiting-signature')
   const [error, setError] = useState<string | null>(null)
@@ -246,7 +254,7 @@ export function DelegationModal({
             <ShareCardBlock
               title="Your ENS is now delegated"
               body="Share your card to bring more ENS into active governance."
-              tweetText={HOLDER_TWEET_TEXT}
+              tweetText={holderTweetText}
               shareUrl={holderShareUrl}
               ogImageUrl={holderOgImageUrl}
             />

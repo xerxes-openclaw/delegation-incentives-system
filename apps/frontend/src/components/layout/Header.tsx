@@ -255,16 +255,9 @@ const MobileNavLink = styled(NavLink)`
   }
 `
 
-const publicNavItems = [
-  { to: '/', label: 'Home' },
-  { to: '/griff', label: 'Griff' },
-  { to: '/rounds', label: 'Rounds' },
-  { to: '/transparency', label: 'Transparency' },
-] as const
+const publicNavItems = [] as const
 
-const walletNavItems = [
-  { to: '/dashboard', label: 'Dashboard' },
-] as const
+const walletNavItems = [] as const
 
 const ConnectedAccountWrap = styled.div`
   display: flex;

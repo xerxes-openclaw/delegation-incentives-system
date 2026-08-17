@@ -1,7 +1,6 @@
 import { lazy, Suspense, type ReactElement, type ReactNode } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AppLayout } from '@/components/layout/AppLayout'
-import { LandingPage } from '@/pages/LandingPage'
 import {
   DashboardPageSkeleton,
   DelegateProfileSkeleton,
@@ -30,7 +29,7 @@ export function Router() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route index element={<LandingPage />} />
+        <Route index element={<LazyPage><GriffPage /></LazyPage>} />
         <Route path="dashboard" element={<LazyPage><DashboardPage /></LazyPage>} />
         <Route path="voters" element={<LazyPage fallback={<VotersPageSkeleton />}><VotersPage /></LazyPage>} />
         <Route path="voters/:address" element={<LazyPage fallback={<DelegateProfileSkeleton />}><VoterProfilePage /></LazyPage>} />

@@ -254,9 +254,9 @@ const ShareButton = styled.a`
   gap: 8px;
   padding: 14px 24px;
   border-radius: 8px;
-  background: ${tokens.color.blue};
-  color: ${tokens.color.white};
-  border: 1px solid ${tokens.color.blue};
+  background: ${tokens.color.white};
+  color: ${tokens.color.text};
+  border: 1px solid ${tokens.color.border};
   font-family: inherit;
   font-size: ${tokens.font.size.base};
   font-weight: ${tokens.font.weight.bold};
@@ -275,9 +275,9 @@ const ShareButton = styled.a`
   }
 
   &:hover {
-    background: ${tokens.color.darkBlue};
-    border-color: ${tokens.color.darkBlue};
-    color: ${tokens.color.white};
+    background: ${tokens.color.surfaceAlt};
+    border-color: ${tokens.color.gray};
+    color: ${tokens.color.text};
     text-decoration: none;
   }
 
@@ -552,17 +552,6 @@ export function TierTableSection({ tiers }: TierTableSectionProps) {
             )
           })}
         </List>
-
-        <CtaWrap>
-          <ShareButton
-            href={buildTwitterShareUrl()}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FontAwesomeIcon icon={faShareNodes} />
-            Share &amp; grow the pool
-          </ShareButton>
-        </CtaWrap>
       </Inner>
     </Section>
   )
