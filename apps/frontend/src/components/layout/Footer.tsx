@@ -171,7 +171,7 @@ export function Footer() {
           <BrandBlock>
             <BrandText>A community program for safer ENS governance.</BrandText>
             <BrandSub>
-              Forked version built by Xerxes. Forked from{' '}
+              Forked version built by Zeptimus. Forked from{' '}
               <BrandSubLink
                 href="https://github.com/blockful/delegation-incentives-system"
                 target="_blank"
