@@ -319,7 +319,7 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
       <Hero>
         <HeroInner>
           <Avatar src={GRIFF_AVATAR} alt="griff.eth avatar" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-          <Title>Delegate your ENS to Griff</Title>
+          <Title>Delegate your voting power to Griff</Title>
           <Sub>
             Griff Green has been in Ethereum since 2015. He led the community response to
             TheDAO hack, co-founded the White Hat Group that rescued a tenth of all ETH in
