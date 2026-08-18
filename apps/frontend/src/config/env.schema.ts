@@ -5,6 +5,16 @@ const BooleanEnvSchema = z.preprocess(
   z.enum(['true', 'false']),
 ).transform((value) => value === 'true')
 
+// Unset means "off". Used for optional feature flags so that adding one does
+// not break existing .env files that predate it.
+const OptionalBooleanEnvSchema = z.preprocess(
+  (value) => {
+    if (value === undefined || value === null || value === '') return 'false'
+    return typeof value === 'string' ? value.trim().toLowerCase() : value
+  },
+  z.enum(['true', 'false']),
+).transform((value) => value === 'true')
+
 const PortEnvSchema = z.coerce.number().int().min(1).max(65_535)
 
 const AbsoluteUrlSchema = z
@@ -39,6 +49,10 @@ const PublicFrontendEnvSchema = z.object({
   VITE_API_BASE_URL: ApiBaseUrlSchema,
   VITE_USE_MOCK_API: BooleanEnvSchema,
   VITE_REOWN_PROJECT_ID: z.string().trim().min(1),
+  // Gasless delegation via the Gateful relayer. Off unless explicitly enabled,
+  // mirroring the backend, which only mounts the relayer proxy when both
+  // BLOCKFUL_API_TOKEN and GATEFUL_UPSTREAM_URL are set.
+  VITE_ENABLE_GASLESS: OptionalBooleanEnvSchema,
 })
 
 const FrontendDevServerEnvSchema = z.object({
@@ -74,6 +88,7 @@ export interface PublicFrontendEnv {
   apiBaseUrl: string
   useMockApi: boolean
   reownProjectId: string
+  enableGasless: boolean
 }
 
 export interface FrontendDevServerEnv {
@@ -92,6 +107,7 @@ export function parsePublicFrontendEnv(rawEnv: Record<string, unknown>): PublicF
     apiBaseUrl: env.VITE_API_BASE_URL,
     useMockApi: env.VITE_USE_MOCK_API,
     reownProjectId: env.VITE_REOWN_PROJECT_ID,
+    enableGasless: env.VITE_ENABLE_GASLESS,
   }
 }
 

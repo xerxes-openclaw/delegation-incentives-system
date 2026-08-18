@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useReadContract } from "wagmi";
 import { formatUnits, zeroAddress, type Address } from "viem";
 
+import { env } from "@/config/env";
+
 import { FRONTEND_CLIENT_SOURCE, RELAYER_BASE_URL } from "../relayerClient";
 
 const ENS_TOKEN_ADDRESS =
@@ -68,10 +70,20 @@ interface UseRelayerBalanceResult {
 }
 
 export const useRelayerBalance = (): UseRelayerBalanceResult => {
+  const gaslessEnabled = env.enableGasless;
+
   const { data, isLoading } = useQuery({
     queryKey: ["relayer", "balance"],
     queryFn: () => fetchRelayer<RelayerBalanceResponse>(BALANCE_PATH),
+    enabled: gaslessEnabled,
   });
+
+  // With gasless off there is no relayer to ask. Report "cannot sponsor"
+  // immediately rather than firing a request that would 404 against a backend
+  // running without the proxy mounted.
+  if (!gaslessEnabled) {
+    return { hasEnoughBalance: false, isLoading: false };
+  }
 
   return {
     hasEnoughBalance: data?.hasEnoughBalance ?? null,
@@ -86,7 +98,7 @@ interface UseRelayerConfigResult {
 
 export const useRelayerConfig = (): UseRelayerConfigResult => {
   const { hasEnoughBalance, isLoading: balanceLoading } = useRelayerBalance();
-  const enabled = hasEnoughBalance === true;
+  const enabled = env.enableGasless && hasEnoughBalance === true;
 
   const { data, isLoading } = useQuery({
     queryKey: ["relayer", "config"],
@@ -165,10 +177,11 @@ interface UseGaslessEligibilityResult {
 export const useGaslessEligibility = (
   address: Address | undefined,
 ): UseGaslessEligibilityResult => {
+  const gaslessEnabled = env.enableGasless;
   const { hasEnoughBalance, isLoading: balanceLoading } = useRelayerBalance();
   const { minVotingPower, isLoading: configLoading } = useRelayerConfig();
 
-  const queryEnabled = !!address && hasEnoughBalance === true;
+  const queryEnabled = gaslessEnabled && !!address && hasEnoughBalance === true;
 
   const targetAddress = address ?? zeroAddress;
 
@@ -194,6 +207,7 @@ export const useGaslessEligibility = (
   const userBalance = userBalanceData ?? null;
 
   const isLoading =
+    gaslessEnabled &&
     !!address &&
     (balanceLoading ||
       (hasEnoughBalance === true &&
@@ -204,6 +218,10 @@ export const useGaslessEligibility = (
   // inputs are known — the balance-gated reasons don't wait on the rate limit.
   // `null` = eligible or not-yet-resolved.
   const reason = useMemo<SponsorshipBlockReason | null>(() => {
+    // Feature off: gas sponsorship was never on offer, so there is nothing to
+    // explain. A reason here would pop the "sponsored gas is paused"
+    // interstitial in front of every delegation.
+    if (!gaslessEnabled) return null;
     if (!address || balanceLoading) return null;
     if (hasEnoughBalance !== true) return "relayer-paused";
     if (minVotingPower === null || userBalance === null) return null;
@@ -215,6 +233,7 @@ export const useGaslessEligibility = (
     if (delegationRemaining <= 0) return "rate-limited";
     return null;
   }, [
+    gaslessEnabled,
     address,
     balanceLoading,
     hasEnoughBalance,
@@ -223,7 +242,10 @@ export const useGaslessEligibility = (
     delegationRemaining,
   ]);
 
-  const isEligible = !isLoading && !!address && reason === null;
+  // gaslessEnabled is load-bearing: without it a null reason plus a settled
+  // loading state would read as "eligible" and route to the gasless path.
+  const isEligible =
+    gaslessEnabled && !isLoading && !!address && reason === null;
 
   return {
     isEligible,

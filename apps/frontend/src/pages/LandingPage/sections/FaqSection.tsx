@@ -2,7 +2,6 @@ import { useId, useState } from 'react'
 import styled from 'styled-components'
 import { Button, DownChevronSVG, RightArrowSVG } from '@ensdomains/thorin'
 import { tokens } from '@/styles/tokens'
-import { useGasSponsorshipMinEns } from '@/features/delegate/hooks/useGaslessRelayer'
 
 /** ClickUp intake form for questions the FAQ doesn't answer. */
 const ASK_US_ANYTHING_URL =
@@ -180,19 +179,17 @@ interface FaqEntry {
 }
 
 /**
- * FAQ copy is canonical in Figma ("Home — FAQ", file 9h3HrcD5YgkGe37Hw3vAmm).
- * The free-gas threshold is the one dynamic piece: it interpolates the
- * relayer's live minimum via useGasSponsorshipMinEns(), because the Figma
- * copy ("hold some ENS") predates the >= 100 ENS sponsorship threshold.
- * Earning has no minimum — only gas sponsorship is gated by the threshold.
+ * FAQ copy is canonical in Figma ("Home — FAQ", file 9h3HrcD5YgkGe37Hw3vAmm),
+ * with the sponsored-gas answer rewritten: this deployment runs without a
+ * relayer, so delegators pay their own network fee. Earning has no minimum —
+ * any ENS balance qualifies.
  */
-function buildFaqEntries(gasMinEns: string): FaqEntry[] {
+function buildFaqEntries(): FaqEntry[] {
   return [
     {
-      question: 'Is delegating really free?',
-      answer: `For most people, yes. We cover the gas fee when you delegate, for up to 3 delegations a month, as long as you hold at least ${gasMinEns} ENS.* Go over 3 in a month and you can still delegate by paying a small network fee yourself. Your rewards stay exactly the same either way. Free gas is separate from earning: you earn with any amount of ENS, as long as you hold some.`,
-      footnote:
-        '*Sponsored gas also depends on our relayer being funded. If it is ever paused, you will see a normal wallet gas prompt before confirming.',
+      question: 'What does delegating cost?',
+      answer:
+        'One Ethereum network fee, the same as any other transaction, usually a couple of dollars. We charge nothing on top and there is no minimum balance to take part. Earning is separate from the fee: you earn with any amount of ENS, as long as you hold some.',
     },
     {
       question: 'Do I keep control of my tokens?',
@@ -207,7 +204,7 @@ function buildFaqEntries(gasMinEns: string): FaqEntry[] {
     {
       question: 'Am I eligible to earn?',
       answer:
-        'If you hold ENS, yes, as long as it is delegated to a delegate who actually votes. ENS that sits undelegated, or is delegated to someone who skips the votes, does not earn. If you are a delegate, you qualify by voting on enough of the round’s proposals. There is no minimum to earn and no sign-up. Free gas has its own rules, but that is separate from earning.',
+        'If you hold ENS, yes, as long as it is delegated to a delegate who actually votes. ENS that sits undelegated, or is delegated to someone who skips the votes, does not earn. If you are a delegate, you qualify by voting on enough of the round’s proposals. There is no minimum to earn and no sign-up.',
     },
     {
       question: 'Do I need to do anything to earn the most?',
@@ -266,8 +263,7 @@ function FaqItem({ entry }: { entry: FaqEntry }) {
 }
 
 export function FaqSection() {
-  const gasMinEns = useGasSponsorshipMinEns()
-  const entries = buildFaqEntries(gasMinEns)
+  const entries = buildFaqEntries()
 
   return (
     <Section id="faq" data-testid="faq-section">

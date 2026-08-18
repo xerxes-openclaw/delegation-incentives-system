@@ -19,7 +19,6 @@ import type { AddressDistributionRound } from '@/api/types'
 import { DashboardPageSkeleton } from '@/components/shared/PageSkeletons'
 import { useWalletState } from '@/features/wallet/useWalletState'
 import { DashboardValuesCard } from '@/features/matchmaking'
-import { useGasSponsorshipMinEns } from '@/features/delegate/hooks/useGaslessRelayer'
 import { useAsync } from '@/hooks/useAsync'
 import { EnsAvatar } from '@/components/shared/EnsAvatar'
 import { tokens, fadeInUp, ErrorMessage } from '@/styles'
@@ -482,7 +481,6 @@ function DashboardContent({ address, isDelegated }: DashboardContentProps) {
     },
   })
 
-  const gasMinEns = useGasSponsorshipMinEns()
 
   if (loading) return <DashboardPageSkeleton />
 
@@ -516,7 +514,7 @@ function DashboardContent({ address, isDelegated }: DashboardContentProps) {
   const hasPayouts = payoutRows.length > 0
 
   const tweetText = isDelegated
-    ? `I'm delegating my ENS to ${delegateLabel} to help keep ENS governance active, and earning rewards from the DAO. Payouts are automatic, gas is sponsored for wallets with ${gasMinEns}+ ENS - see the program 👇`
+    ? `I'm delegating my ENS to ${delegateLabel} to help keep ENS governance active, and earning rewards from the DAO. Payouts are automatic and my tokens never leave my wallet - see the program 👇`
     : ''
   const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(window.location.origin)}`
 

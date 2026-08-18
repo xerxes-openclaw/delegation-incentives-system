@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import { tokens } from '@/styles/tokens'
 import { fadeInUp } from '@/styles/primitives'
 import { LiveDot } from '@/components/shared/LiveDot'
-import { useGasSponsorshipMinEns } from '@/features/delegate/hooks/useGaslessRelayer'
 
 const RouterLink = styled(Link)`
   text-decoration: none;
@@ -167,21 +166,6 @@ const Subtitle = styled.p`
   }
 `
 
-const FreeBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 8px;
-  border-radius: 9999px;
-  background: rgba(246, 248, 250, 0.2);
-  border: 1px solid rgba(208, 215, 222, 0.2);
-  font-size: ${tokens.font.size.xs};
-  font-weight: ${tokens.font.weight.bold};
-  line-height: 16px;
-  color: white;
-  margin-left: ${tokens.spacing.sm};
-  vertical-align: middle;
-`
-
 const Actions = styled.div`
   display: flex;
   flex-direction: column;
@@ -217,7 +201,6 @@ const PARTICLE_CONFIGS = [
 ]
 
 export function HeroSection() {
-  const gasMinEns = useGasSponsorshipMinEns()
   return (
     <Section>
       <ParticlesLayer aria-hidden>
@@ -245,12 +228,12 @@ export function HeroSection() {
         <Subtitle>
           Help secure ENS governance by delegating to an active voter.
           <br />
-          Rewards are automatic, gas is sponsored for wallets holding {gasMinEns}+ ENS.
+          Rewards are automatic, and you can switch delegate or withdraw anytime.
         </Subtitle>
         <Actions>
           <RouterLink to="/griff">
             <Button colorStyle="bluePrimary">
-              Delegate to Griff<FreeBadge>Free</FreeBadge>
+              Delegate to Griff
             </Button>
           </RouterLink>
           <AnchorLink href="#how-it-works" onClick={scrollToHowItWorks}>

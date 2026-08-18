@@ -47,7 +47,7 @@ describe('LandingPage', () => {
     })
 
     const questions = [
-      'Is delegating really free?',
+      'What does delegating cost?',
       'Do I keep control of my tokens?',
       'How do I earn rewards?',
       'Am I eligible to earn?',
@@ -67,21 +67,21 @@ describe('LandingPage', () => {
     ).not.toBeInTheDocument()
   })
 
-  it('FAQ free-gas answer interpolates the sponsorship threshold once expanded', async () => {
-    // Items start collapsed, so expand the free-gas question before asserting.
-    // `useGasSponsorshipMinEns` reads the relayer config (MSW returns
-    // minVotingPower=1e18 → '1') and falls back to the copy default while it
-    // loads, so assert the sentence shape rather than a fixed number.
+  it('FAQ cost answer states the user pays the network fee, once expanded', async () => {
+    // Items start collapsed, so expand the cost question before asserting.
+    // This deployment runs without a relayer, so the answer must not promise
+    // sponsored gas or gate participation on a minimum balance.
     renderApp(<LandingPage />)
     const question = await screen.findByRole('button', {
-      name: 'Is delegating really free?',
+      name: 'What does delegating cost?',
     })
     await userEvent.click(question)
     await waitFor(() => {
       expect(
-        screen.getByText(/as long as you hold at least [\d.]+ ENS/),
+        screen.getByText(/One Ethereum network fee/),
       ).toBeInTheDocument()
     })
+    expect(screen.queryByText(/gas is sponsored/i)).not.toBeInTheDocument()
   })
 
   it('FAQ expands an item when its question is clicked', async () => {

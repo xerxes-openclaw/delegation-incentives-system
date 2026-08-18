@@ -1,4 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+// This suite covers the relayer-enabled behaviour, so the flag is forced on.
+// The disabled path lives in useGaslessRelayer.disabled.test.tsx.
+vi.mock("@/config/env", () => ({
+  env: {
+    apiBaseUrl: "/api",
+    useMockApi: false,
+    reownProjectId: "test",
+    enableGasless: true,
+  },
+}));
 import { renderHook, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
 import { useReadContract } from "wagmi";

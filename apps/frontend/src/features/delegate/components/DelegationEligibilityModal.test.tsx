@@ -1,4 +1,16 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+
+// These cases exercise gasless delegation, so the feature flag is forced on.
+// Production defaults it off (see VITE_ENABLE_GASLESS in config/env.schema.ts).
+vi.mock('@/config/env', () => ({
+  env: {
+    apiBaseUrl: '/api',
+    useMockApi: false,
+    reownProjectId: 'test',
+    enableGasless: true,
+  },
+}))
+
 import { screen, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 

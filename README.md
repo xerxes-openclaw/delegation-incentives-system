@@ -44,6 +44,7 @@ pnpm --filter @ens-dis/backend dev
 | `BLOCKFUL_API_TOKEN` | Bearer token forwarded by the backend to the Gateful relayer (required when relayer is enabled) |
 | `GATEFUL_UPSTREAM_URL` | Upstream Gateful relayer base URL (required when relayer is enabled) |
 | `ALLOWED_ORIGINS` | Comma-separated frontend origins permitted to call this backend cross-origin (required in production when the SPA hits the backend on a different origin) |
+| `VITE_ENABLE_GASLESS` | Frontend build flag. `true` enables the gasless delegation UI; anything else (including unset) disables it and delegations go direct on-chain |
 
 ## API Endpoints
 

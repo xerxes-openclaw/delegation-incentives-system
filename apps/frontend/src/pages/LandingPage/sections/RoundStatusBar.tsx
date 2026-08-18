@@ -8,13 +8,11 @@ import { LiveDot } from '@/components/shared/LiveDot'
 import { LabelWithTooltip } from '@/components/shared/LabelWithTooltip'
 
 /**
- * Canonical sponsored-gas explainer (DEV-761, wording variant B). The ⓘ is a
- * lightweight explainer only — never an eligibility gate. The cases where gas
- * is NOT free (monthly limit spent, relayer paused) are surfaced by the
- * delegation modal, not by hiding/qualifying this chip.
+ * Explains that delegation is reversible. The ⓘ is a lightweight explainer
+ * only — never an eligibility gate.
  */
-const GAS_SPONSORED_TOOLTIP =
-  'We cover the network fee when you delegate through this site, for up to 3 delegations a month. If sponsorship is ever paused, you will see a normal gas prompt first.'
+const SWITCH_ANYTIME_TOOLTIP =
+  'Delegation is not a lock-in. You can pick a different delegate, or withdraw your delegation entirely, whenever you want — your rewards follow your current choice.'
 
 interface RoundStatusBarProps {
   currentGrowthPct: string
@@ -170,10 +168,10 @@ export function RoundStatusBar({
           <TrustItem>
             <FontAwesomeIcon icon={faCircleCheck} />
             <LabelWithTooltip
-              text={GAS_SPONSORED_TOOLTIP}
-              iconAriaLabel="About sponsored gas"
+              text={SWITCH_ANYTIME_TOOLTIP}
+              iconAriaLabel="About switching delegate"
             >
-              Gas sponsored
+              Switch anytime
             </LabelWithTooltip>
           </TrustItem>
           <TrustItem>

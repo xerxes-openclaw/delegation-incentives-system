@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { tokens } from '@/styles/tokens'
 import { fadeInUp } from '@/styles/primitives'
-import { useGasSponsorshipMinEns } from '@/features/delegate/hooks/useGaslessRelayer'
 
 const Section = styled.section`
   background: ${tokens.color.surfaceAlt};
@@ -220,13 +219,13 @@ type Step = {
   tagColor: string
 }
 
-function buildSteps(gasMinEns: string): Step[] {
+function buildSteps(): Step[] {
   return [
     {
       number: '1',
       title: 'Delegate to an active voter',
-      desc: `Pick a delegate who consistently votes on ENS proposals. You keep your tokens, and gas is sponsored if you hold ${gasMinEns}+ ENS.`,
-      tag: `Gas sponsored with ${gasMinEns}+ ENS`,
+      desc: 'Pick a delegate who consistently votes on ENS proposals. Delegating assigns voting power only — your tokens stay in your wallet.',
+      tag: 'Your tokens never move',
       tagBg: tokens.color.tierHighlight,
       tagColor: tokens.color.positiveEmphasis,
     },
@@ -291,8 +290,7 @@ function RevealStep({
 }
 
 export function HowItWorksSection() {
-  const gasMinEns = useGasSponsorshipMinEns()
-  const steps = buildSteps(gasMinEns)
+  const steps = buildSteps()
 
   return (
     <Section id="how-it-works">
