@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "sh -c 'set -a; [ -f ../../.env ] && . ../../.env; set +a; PORT=${BACKEND_PORT:-${PORT:-42069}} ponder dev'",
-    "start": "sh -c 'set -a; [ -f ../../.env ] && . ../../.env; set +a; PORT=${BACKEND_PORT:-${PORT:-42069}} ponder start --schema=${RAILWAY_DEPLOYMENT_ID:-staging}'",
+    "start": "sh -c 'set -a; [ -f ../../.env ] && . ../../.env; set +a; PORT=${BACKEND_PORT:-${PORT:-42069}} ponder start --schema=${DATABASE_SCHEMA:-prod}'",
     "db:prune": "sh -c 'set -a; [ -f ../../.env ] && . ../../.env; set +a; ponder db prune'",
     "codegen": "ponder codegen",
     "openapi:gen": "vitest run scripts/gen-openapi.test.ts",

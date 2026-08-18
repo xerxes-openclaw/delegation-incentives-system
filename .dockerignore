@@ -1,0 +1,29 @@
+# Build artefacts and local state — never belong in the image.
+**/node_modules
+**/.ponder
+**/dist
+**/coverage
+**/test-results
+**/*.tsbuildinfo
+*.log
+
+# Secrets. Env comes from the container runtime, not a baked-in file.
+.env
+.env*.local
+
+.git
+.githooks
+.vercel
+
+# The frontend deploys separately to Vercel. Only its manifest is needed, so
+# that pnpm's --frozen-lockfile check can validate the workspace.
+apps/frontend/*
+!apps/frontend/package.json
+
+# Backend tests aren't run from the image.
+apps/backend/test
+apps/backend/tests
+
+# Vercel-only serverless functions, and docs.
+api
+docs

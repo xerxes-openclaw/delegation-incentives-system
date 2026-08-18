@@ -38,6 +38,7 @@ pnpm --filter @ens-dis/backend dev
 |---|---|
 | `RPC_URL` | Ethereum mainnet RPC (required) |
 | `DATABASE_URL` | PostgreSQL connection string (required) |
+| `DATABASE_SCHEMA` | Postgres schema for indexer state (default: `prod`). Keep stable across deploys — changing it triggers a full re-index |
 | `BACKEND_PORT` | API port (default: 42069) |
 | `ROUND_MONTHS` | Comma-separated configured round months, e.g. `2026-03,2026-04,2026-05` |
 | `BLOCKFUL_API_TOKEN` | Bearer token forwarded by the backend to the Gateful relayer (required when relayer is enabled) |
