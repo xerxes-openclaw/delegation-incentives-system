@@ -46,6 +46,8 @@ pnpm --filter @ens-dis/backend dev
 | `GATEFUL_UPSTREAM_URL` | Upstream Gateful relayer base URL. Optional — omit both to disable gasless delegation entirely |
 | `ALLOWED_ORIGINS` | Comma-separated frontend origins permitted to call this backend cross-origin (required in production when the SPA hits the backend on a different origin) |
 | `VITE_ENABLE_GASLESS` | Frontend build flag. `true` enables the gasless delegation UI; anything else (including unset) disables it and delegations go direct on-chain |
+| `APP_DOMAIN` | Deployment only. Public hostname Caddy serves the SPA and API from |
+| `VITE_REOWN_PROJECT_ID` | Reown/WalletConnect project id. Compiled into the bundle at build time |
 
 ## API Endpoints
 
@@ -64,6 +66,28 @@ Scalar API reference at `GET /docs`. OpenAPI 3.0 spec at `GET /openapi.json`.
 | `GET` | `/distributions/{month}/csv` | Download distribution as CSV |
 
 The backend also starts an automatic distribution scheduler in normal runs. It waits for Ponder readiness, then scans every minute and computes any configured `ROUND_MONTHS` that ended at least one minute ago and are not already cached.
+
+## Deployment
+
+`docker-compose.yml` runs the whole system on one host:
+
+| Service | Role |
+|---|---|
+| `db` | PostgreSQL 16, loopback-bound, named volume |
+| `backend` | Ponder indexer + REST API, not publicly exposed |
+| `caddy` | Built from `Dockerfile.web`: serves the built SPA and reverse-proxies the API |
+
+Everything is served from a single origin (`APP_DOMAIN`): `/api/*` is stripped and
+forwarded to the backend, and every other path falls back to the SPA's `index.html`.
+Because frontend and API share an origin, `ALLOWED_ORIGINS` is not needed.
+
+```bash
+cp .env.example .env   # then fill in APP_DOMAIN, RPC_URL, POSTGRES_*, VITE_REOWN_PROJECT_ID
+docker compose up -d --build
+```
+
+Frontend changes require rebuilding the `caddy` service, since the bundle is baked
+into that image: `docker compose up -d --build caddy`.
 
 ## Documentation
 

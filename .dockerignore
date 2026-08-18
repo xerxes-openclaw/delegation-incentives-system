@@ -15,10 +15,10 @@
 .githooks
 .vercel
 
-# The frontend deploys separately to Vercel. Only its manifest is needed, so
-# that pnpm's --frozen-lockfile check can validate the workspace.
-apps/frontend/*
-!apps/frontend/package.json
+# Dockerfile.web builds the SPA from these, so frontend sources must stay in
+# the context. Only its heavy local-only directories are excluded.
+apps/frontend/e2e
+apps/frontend/playwright.config.ts
 
 # Backend tests aren't run from the image.
 apps/backend/test

@@ -1,0 +1,45 @@
+# syntax=docker/dockerfile:1
+#
+# Public web tier: builds the SPA and bakes it into a Caddy image that also
+# reverse-proxies the API. Both are served from one origin, so the browser
+# never issues a cross-origin request and CORS is not involved at all.
+
+FROM node:20-bookworm-slim AS build
+
+RUN corepack enable
+RUN mkdir -p /app && chown node:node /app
+WORKDIR /app
+USER node
+
+# Manifests first so the dependency layer caches independently of source.
+COPY --chown=node:node pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY --chown=node:node apps/frontend/package.json apps/frontend/
+COPY --chown=node:node apps/backend/package.json apps/backend/
+COPY --chown=node:node packages/domain/package.json packages/domain/
+
+RUN pnpm install --filter @ens-dis/frontend... --frozen-lockfile --prod=false
+
+# @ens-dis/domain ships raw TypeScript, so its source is needed for `tsc -b`.
+COPY --chown=node:node packages/domain packages/domain
+COPY --chown=node:node apps/frontend apps/frontend
+
+# Vite compiles these into the bundle, so they are build-time only — they
+# cannot come from the runtime .env the way the backend's variables do.
+# vite.config.ts reads them through loadEnv(), which merges process.env.
+#
+# VITE_API_BASE_URL stays relative: same-origin means it never has to change
+# when the domain does. VITE_ENABLE_GASLESS is deliberately absent — it
+# defaults to off.
+ARG VITE_API_BASE_URL=/api
+ARG VITE_USE_MOCK_API=false
+ARG VITE_REOWN_PROJECT_ID
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL} \
+    VITE_USE_MOCK_API=${VITE_USE_MOCK_API} \
+    VITE_REOWN_PROJECT_ID=${VITE_REOWN_PROJECT_ID}
+
+RUN pnpm --filter @ens-dis/frontend build
+
+FROM caddy:2-alpine
+# The Caddyfile itself is bind-mounted by docker-compose.yml so it can be
+# edited and reloaded without rebuilding the image.
+COPY --from=build /app/apps/frontend/dist /srv
