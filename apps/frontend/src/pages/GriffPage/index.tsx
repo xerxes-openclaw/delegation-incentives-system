@@ -323,7 +323,7 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
           <Sub>
             Griff Green has been in Ethereum since 2015. He led the community response to
             TheDAO hack, co-founded the White Hat Group that rescued a tenth of all ETH in
-            circulation, and founded Giveth. Today he sits on the ENS Security Council. As a delegate he actually shows up: he votes,
+            circulation, and founded Giveth. He is a member of ENS Security Council. As a delegate he actually shows up: he votes,
             he explains his reasoning in public, and he's been doing it across ENS,
             Optimism, Gitcoin and Arbitrum for years. Delegation is a trust decision.
             His record is easy to check.
