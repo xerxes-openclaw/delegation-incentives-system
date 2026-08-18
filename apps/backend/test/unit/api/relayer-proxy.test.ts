@@ -227,7 +227,7 @@ describe("relayer proxy", () => {
   });
 });
 
-describe("relayer proxy env validation", () => {
+describe("relayer proxy configuration detection", () => {
   const originalToken = process.env.BLOCKFUL_API_TOKEN;
   const originalUrl = process.env.GATEFUL_UPSTREAM_URL;
 
@@ -237,21 +237,43 @@ describe("relayer proxy env validation", () => {
     vi.resetModules();
   });
 
-  it("throws when BLOCKFUL_API_TOKEN is unset", async () => {
+  it("reports unconfigured when BLOCKFUL_API_TOKEN is unset", async () => {
     vi.resetModules();
     delete process.env.BLOCKFUL_API_TOKEN;
     process.env.GATEFUL_UPSTREAM_URL = "https://upstream.test";
-    await expect(import("../../../src/api/relayer-proxy.js?missing-token")).rejects.toThrow(
-      /BLOCKFUL_API_TOKEN/,
+    const { isRelayerConfigured } = await import(
+      "../../../src/api/relayer-proxy.js?missing-token"
     );
+    expect(isRelayerConfigured).toBe(false);
   });
 
-  it("throws when GATEFUL_UPSTREAM_URL is unset", async () => {
+  it("reports unconfigured when GATEFUL_UPSTREAM_URL is unset", async () => {
     vi.resetModules();
     process.env.BLOCKFUL_API_TOKEN = "test-token";
     delete process.env.GATEFUL_UPSTREAM_URL;
-    await expect(import("../../../src/api/relayer-proxy.js?missing-url")).rejects.toThrow(
-      /GATEFUL_UPSTREAM_URL/,
+    const { isRelayerConfigured } = await import(
+      "../../../src/api/relayer-proxy.js?missing-url"
     );
+    expect(isRelayerConfigured).toBe(false);
+  });
+
+  it("reports unconfigured when neither var is set", async () => {
+    vi.resetModules();
+    delete process.env.BLOCKFUL_API_TOKEN;
+    delete process.env.GATEFUL_UPSTREAM_URL;
+    const { isRelayerConfigured } = await import(
+      "../../../src/api/relayer-proxy.js?missing-both"
+    );
+    expect(isRelayerConfigured).toBe(false);
+  });
+
+  it("reports configured when both vars are set", async () => {
+    vi.resetModules();
+    process.env.BLOCKFUL_API_TOKEN = "test-token";
+    process.env.GATEFUL_UPSTREAM_URL = "https://upstream.test";
+    const { isRelayerConfigured } = await import(
+      "../../../src/api/relayer-proxy.js?configured"
+    );
+    expect(isRelayerConfigured).toBe(true);
   });
 });

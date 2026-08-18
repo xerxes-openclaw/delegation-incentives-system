@@ -4,16 +4,18 @@ import type { Context } from "hono";
 const BLOCKFUL_API_TOKEN = process.env.BLOCKFUL_API_TOKEN;
 const GATEFUL_UPSTREAM_URL = process.env.GATEFUL_UPSTREAM_URL;
 
-if (!BLOCKFUL_API_TOKEN) {
-  throw new Error(
-    "BLOCKFUL_API_TOKEN is required when mounting the relayer proxy",
-  );
-}
-if (!GATEFUL_UPSTREAM_URL) {
-  throw new Error(
-    "GATEFUL_UPSTREAM_URL is required when mounting the relayer proxy",
-  );
-}
+/**
+ * Gasless delegation is optional. With both vars set the proxy is mounted and
+ * the frontend offers relayed delegation; with neither set the routes are not
+ * mounted at all and the frontend falls back to a direct on-chain
+ * delegate(address) call, which the user pays for.
+ *
+ * Setting exactly one is a deploy mistake rather than an opt-out, and is
+ * rejected by the env schema in ../config/env.ts.
+ */
+export const isRelayerConfigured = Boolean(
+  BLOCKFUL_API_TOKEN && GATEFUL_UPSTREAM_URL,
+);
 
 const MAX_BODY_BYTES = 8 * 1024;
 // GATEFUL_UPSTREAM_TIMEOUT_MS is a test-only override (vi.useFakeTimers() doesn't mock AbortSignal.timeout); leave unset in production so the 15_000 ms default applies.

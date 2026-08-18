@@ -41,8 +41,8 @@ pnpm --filter @ens-dis/backend dev
 | `DATABASE_SCHEMA` | Postgres schema for indexer state (default: `prod`). Keep stable across deploys — changing it triggers a full re-index |
 | `BACKEND_PORT` | API port (default: 42069) |
 | `ROUND_MONTHS` | Comma-separated configured round months, e.g. `2026-03,2026-04,2026-05` |
-| `BLOCKFUL_API_TOKEN` | Bearer token forwarded by the backend to the Gateful relayer (required when relayer is enabled) |
-| `GATEFUL_UPSTREAM_URL` | Upstream Gateful relayer base URL (required when relayer is enabled) |
+| `BLOCKFUL_API_TOKEN` | Bearer token forwarded to the Gateful relayer. Optional — set together with `GATEFUL_UPSTREAM_URL` to enable gasless delegation |
+| `GATEFUL_UPSTREAM_URL` | Upstream Gateful relayer base URL. Optional — omit both to disable gasless delegation entirely |
 | `ALLOWED_ORIGINS` | Comma-separated frontend origins permitted to call this backend cross-origin (required in production when the SPA hits the backend on a different origin) |
 | `VITE_ENABLE_GASLESS` | Frontend build flag. `true` enables the gasless delegation UI; anything else (including unset) disables it and delegations go direct on-chain |
 
@@ -83,6 +83,8 @@ The backend also starts an automatic distribution scheduler in normal runs. It w
 ## Gasless Delegation (Relayer)
 
 The frontend delegates voting power via a gasless relayer (when eligible) or falls back to a direct on-chain `delegate(address)` call. Backend routes at `/api/gateful/:dao/relay/*` proxy the upstream Gateful relayer with the bearer token injected server-side.
+
+The relayer is optional and off by default on both sides. With `BLOCKFUL_API_TOKEN` and `GATEFUL_UPSTREAM_URL` unset the proxy routes are never mounted and every delegation goes direct on-chain; setting only one of the two fails startup validation. Independently, the frontend only shows the gasless path when built with `VITE_ENABLE_GASLESS=true`.
 
 Eligibility is the only gate: if the relayer's `/balance` reports `hasEnoughBalance: false`, the upstream is unreachable, or the user is over their rate limit / under `minVotingPower`, the modal switches to direct-tx automatically. To take gasless offline cluster-wide without a redeploy, make `/balance` return `hasEnoughBalance: false`.
 

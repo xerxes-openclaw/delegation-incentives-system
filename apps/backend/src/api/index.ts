@@ -12,7 +12,7 @@ import tiers from "./routes/tiers.js";
 import distributions from "./routes/distributions.js";
 import stats from "./routes/stats.js";
 import selections from "./routes/selections.js";
-import relayerProxy from "./relayer-proxy.js";
+import relayerProxy, { isRelayerConfigured } from "./relayer-proxy.js";
 import { startAutomaticDistributionScheduler } from "./distribution-scheduler.js";
 
 const app = new OpenAPIHono();
@@ -29,7 +29,15 @@ app.route("/", tiers);
 app.route("/", distributions);
 app.route("/", stats);
 app.route("/", selections);
-app.route("/", relayerProxy);
+// Mounted only when the Gateful relayer is configured; otherwise the gasless
+// routes 404 and the frontend delegates directly on-chain.
+if (isRelayerConfigured) {
+  app.route("/", relayerProxy);
+} else if (!process.env.VITEST) {
+  console.info(
+    "[api] Gateful relayer not configured — gasless delegation routes disabled",
+  );
+}
 
 app.doc("/openapi.json", {
   openapi: "3.0.0",
