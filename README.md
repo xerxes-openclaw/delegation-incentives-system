@@ -36,7 +36,8 @@ pnpm --filter @ens-dis/backend dev
 
 | Variable | Description |
 |---|---|
-| `RPC_URL` | Ethereum mainnet RPC (required) |
+| `RPC_URL` | Ethereum mainnet RPC (required). Comma-separated for multiple providers |
+| `ETH_GET_LOGS_BLOCK_RANGE` | Max `eth_getLogs` window in blocks (default: `1000`). Lower on `TimeoutError` during backfill |
 | `DATABASE_URL` | PostgreSQL connection string (required) |
 | `DATABASE_SCHEMA` | Postgres schema for indexer state (default: `prod`). Keep stable across deploys — changing it triggers a full re-index |
 | `BACKEND_PORT` | API port (default: 42069) |

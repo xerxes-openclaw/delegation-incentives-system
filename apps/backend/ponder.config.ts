@@ -165,11 +165,38 @@ const ensGovernorAbi = [
   },
 ] as const;
 
+// RPC_URL accepts a comma-separated list. Ponder spreads load across every
+// entry and takes one out of rotation when it starts failing, so a second
+// provider is the cheapest insurance against a single endpoint stalling the
+// backfill ("All JSON-RPC providers are inactive").
+const rpcUrls = (process.env.RPC_URL ?? "")
+  .split(",")
+  .map((url) => url.trim())
+  .filter(Boolean);
+
+/**
+ * Upper bound on the eth_getLogs window.
+ *
+ * Left undefined, Ponder widens the range and narrows it again by reading
+ * provider *error messages*. That auto-tuning cannot see a timeout: a provider
+ * that simply takes too long returns no "range too large" hint, so Ponder keeps
+ * retrying the same oversized window. Ponder's request timeout is a hardcoded
+ * 10s and is not configurable, so the window is the only lever.
+ *
+ * The ENS token's first months are the worst case — the airdrop makes Transfer
+ * logs extremely dense — so the default is deliberately conservative. Once the
+ * backfill is past 2022 you can raise it and restart; completed ranges are
+ * cached in Postgres, so a restart resumes rather than re-fetching.
+ */
+const ethGetLogsBlockRange =
+  Number(process.env.ETH_GET_LOGS_BLOCK_RANGE) || 1_000;
+
 export default createConfig({
   chains: {
     mainnet: {
       id: 1,
-      rpc: process.env.RPC_URL,
+      rpc: rpcUrls.length > 1 ? rpcUrls : rpcUrls[0],
+      ethGetLogsBlockRange,
     },
   },
   contracts: {
