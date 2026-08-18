@@ -1,0 +1,18 @@
+# Public entrypoint for the backend API.
+#
+# API_DOMAIN must already resolve to this droplet before the first start, or
+# certificate issuance fails. Caddy obtains and renews the certificate itself;
+# the /data volume in docker-compose.yml is what makes that survive a redeploy.
+#
+# Optional: to get expiry notices from Let's Encrypt, add a global block above
+# this one containing `email you@example.com`. It is deliberately omitted --
+# an `email` directive with an unset variable fails config parsing and would
+# crashloop the proxy.
+
+{$API_DOMAIN} {
+	encode zstd gzip
+
+	# `backend` is the compose service name, resolved over the private network.
+	# Caddy is the only container publishing ports.
+	reverse_proxy backend:42069
+}

@@ -36,12 +36,39 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    # Also loopback only — the reverse proxy terminates TLS and forwards here.
+    # Loopback only, for curl and debugging on the droplet itself. Public
+    # traffic never arrives here — it comes through caddy over the private
+    # network. Safe to drop this block entirely if you don't want the port.
     ports:
       - "127.0.0.1:42069:42069"
     logging:
       driver: json-file
       options: { max-size: "10m", max-file: "3" }
 
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+    # The only service exposed publicly. 443/udp carries HTTP/3.
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # caddy_data holds the issued certificates and the ACME account key.
+      # Without persistence every redeploy re-issues and will eventually trip
+      # Let's Encrypt rate limits.
+      - caddy_data:/data
+      - caddy_config:/config
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:
