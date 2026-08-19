@@ -359,7 +359,7 @@ function GriffContent({ tierData }: { tierData: TierProgressionResponse }) {
               </Button>
             )}
           </CtaWrap>
-          <Fine>Free and gasless for most holders. You can re-delegate or undo it any time.</Fine>
+          <Fine>You can re-delegate or undo it any time.</Fine>
         </HeroInner>
       </Hero>
 

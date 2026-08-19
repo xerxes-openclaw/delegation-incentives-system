@@ -38,11 +38,11 @@ type DelegationStep = 'waiting-signature' | 'pending-tx' | 'success' | 'error'
 
 /**
  * Pre-filled X copy for a holder who just delegated (first person). Compliant:
- * no APR / yield / price; "free, gasless", "tokens never leave my wallet",
+ * no APR / yield / price; "tokens never leave my wallet",
  * "rewards from the DAO". The trailing colon leads into the appended share URL.
  */
 export const HOLDER_TWEET_TEXT =
-  "I just delegated my ENS to keep governance active. It's free, gasless, and my tokens never leave my wallet. Delegate yours and earn rewards from the DAO for strengthening ENS:"
+  "I just delegated my ENS to keep governance active. My tokens never leave my wallet. Delegate yours and earn rewards from the DAO for strengthening ENS:"
 
 export interface DelegationModalProps {
   open: boolean

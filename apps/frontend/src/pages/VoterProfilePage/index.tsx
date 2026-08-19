@@ -852,7 +852,7 @@ export function VoterProfilePage() {
     // intent has an Oct-2025 mobile login bug), no APR language, no dash
     // punctuation. The trailing colon leads into the appended profile URL.
     const handle = ensName ?? truncateAddress(voter.address)
-    const text = `${handle} is an active voter on ENS governance. Delegate your ENS to them to keep the DAO strong. It's free, gasless, and you earn rewards from the DAO for strengthening ENS:`
+    const text = `${handle} is an active voter on ENS governance. Delegate your ENS to them to keep the DAO strong. You earn rewards from the DAO for strengthening ENS:`
     const url = buildVoterShareUrl({ address: voter.address, ensName })
     const intent = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`
     window.open(intent, '_blank', 'noopener,noreferrer')

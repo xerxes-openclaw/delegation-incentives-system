@@ -399,7 +399,7 @@ export function VotersPage() {
   const shareUrl = useMemo(() => {
     if (typeof window === 'undefined') return '#'
     const text = encodeURIComponent(
-      "Delegate your ENS to an active voter to help keep governance active. It's free and gasless, and you earn rewards from the ENS DAO. The more people delegate, the bigger the reward pool for everyone.",
+      "Delegate your ENS to an active voter to help keep governance active. You earn rewards from the ENS DAO. The more people delegate, the bigger the reward pool for everyone.",
     )
     const url = encodeURIComponent(window.location.origin)
     return `https://twitter.com/intent/tweet?text=${text}&url=${url}`
